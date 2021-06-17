@@ -252,7 +252,12 @@ class ExportLoginInforSerializer(CustomModelSerializer):
     class Meta:
         model = LoginInfor
         fields = ('id', 'creator_name', 'ipaddr', 'loginLocation', 'browser', 'os',
-                  'status', 'msg', 'creator_name')
+                  'status', 'msg')
+        extra_kwargs = {
+            'creator_name': {
+                'source': 'creator.username',
+            },
+        }
 
 
 # ================================================= #
@@ -279,6 +284,11 @@ class ExportOperationLogSerializer(CustomModelSerializer):
         fields = ('request_modular', 'request_path', 'request_body', 'request_method', 'request_msg', 'request_ip',
                   'request_browser', 'response_code', 'request_location', 'request_os', 'json_result', 'status',
                   'creator_name')
+        extra_kwargs = {
+            'creator_name': {
+                'source': 'creator.username',
+            },
+        }
 
 
 # ================================================= #
@@ -303,3 +313,8 @@ class ExportCeleryLogSerializer(CustomModelSerializer):
     class Meta:
         model = CeleryLog
         fields = ('name', 'kwargs', 'seconds', 'status', 'result', 'creator_name')
+        extra_kwargs = {
+            'creator_name': {
+                'source': 'creator.username',
+            },
+        }
