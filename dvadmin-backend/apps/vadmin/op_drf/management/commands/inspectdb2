@@ -1,0 +1,46 @@
+from django.core.management.commands.inspectdb import (
+    Command as InspectDBCommand,
+)
+from django.db import backends
+
+
+class Command(InspectDBCommand):
+    db_module = 'django.db'
+
+    def get_field_type(self, connection, table_name, row):
+        field_type, field_params, field_notes = super().get_field_type(connection, table_name, row)
+        with connection.cursor() as cursor:
+            columns = get_column_comment(cursor,table_name)
+            field_params.update({"verbose_name": columns.get(row.name)})
+
+        return field_type, field_params, field_notes
+
+
+def is_mysql_cursor(cursor):
+    """ 检查 cursor 对应的 backends 是否为 mysql """
+    return isinstance(cursor.db, backends.mysql.base.DatabaseWrapper)
+
+
+def get_table_comment(cursor, table_name):
+    """ 获取表注释,仅支持 mysql """
+    if not is_mysql_cursor(cursor):
+        return
+    cursor.execute('''
+        SELECT table_comment
+        FROM information_schema.tables
+        WHERE table_name = %s AND table_schema = DATABASE()
+    ''', [table_name])
+    tb = cursor.fetchone()
+    return tb[0] if tb else None
+
+
+def get_column_comment(cursor, table_name):
+    """ 查询并返回 table 对应的注释，对于非 mysql 的游标，返回空 dict """
+    if not is_mysql_cursor(cursor):
+        return {}
+
+    cursor.execute("""
+        SELECT column_name, column_comment
+        FROM information_schema.columns
+        WHERE table_name = %s AND table_schema = DATABASE()""", [table_name])
+    return {line[0]: line[1] for line in cursor.fetchall()}
