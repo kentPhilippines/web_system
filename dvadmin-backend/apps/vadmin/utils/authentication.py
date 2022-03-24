@@ -7,7 +7,7 @@ import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.utils.six import text_type
+# from django.utils.six import text_type
 from django.utils.translation import ugettext as _
 from rest_framework import exceptions
 from rest_framework_jwt.utils import jwt_decode_handler
@@ -61,7 +61,7 @@ class OpAuthJwtAuthentication(object):
         :return:
         """
         auth = request.META.get('HTTP_AUTHORIZATION', b'')
-        if isinstance(auth, text_type):
+        if isinstance(auth, str):
             auth = auth.encode(settings.JWT_AUTH.get('HTTP_HEADER_ENCODING', 'iso-8859-1'))
         if not auth:
             return ''
