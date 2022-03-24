@@ -6,7 +6,7 @@ import logging
 import operator
 from functools import reduce
 
-from django.utils import six
+# from django.utils import six
 from mongoengine.queryset import visitor
 from rest_framework.filters import BaseFilterBackend, SearchFilter, OrderingFilter
 
@@ -34,7 +34,7 @@ class MongoSearchFilter(SearchFilter):
         if not search_fields or not search_terms:
             return queryset
         orm_lookups = [
-            self.construct_search(six.text_type(search_field))
+            self.construct_search(str(search_field))
             for search_field in search_fields
         ]
         if not orm_lookups:
@@ -67,7 +67,7 @@ class MongoOrderingFilter(OrderingFilter):
             ]
         else:
             valid_fields = [
-                (item, item) if isinstance(item, six.string_types) else item
+                (item, item) if isinstance(item, str) else item
                 for item in valid_fields
             ]
 
