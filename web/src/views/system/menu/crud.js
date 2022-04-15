@@ -130,7 +130,7 @@ export const crudOptions = (vm) => {
         type: 'cascader',
         dict: {
           url: menuPrefix + '?limit=999&status=1&is_catalog=1',
-          cache: false,
+          // cache: false,
           isTree: true,
           value: 'id', // 数据字典中value字段的属性名
           label: 'name', // 数据字典中label字段的属性名

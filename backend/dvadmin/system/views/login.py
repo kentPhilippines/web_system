@@ -11,6 +11,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 from captcha.views import CaptchaStore, captcha_image
+from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import login
 from django.shortcuts import redirect
@@ -56,7 +57,7 @@ class LoginSerializer(TokenObtainPairSerializer):
     登录的序列化器:
     重写djangorestframework-simplejwt的序列化器
     """
-    captcha = serializers.CharField(max_length=6)
+    captcha = serializers.CharField(max_length=6, required=False, allow_null=True)
 
     class Meta:
         model = Users
@@ -68,18 +69,19 @@ class LoginSerializer(TokenObtainPairSerializer):
     }
 
     def validate_captcha(self, captcha):
-        self.image_code = CaptchaStore.objects.filter(
-            id=self.initial_data['captchaKey']).first()
-        five_minute_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
-        if self.image_code and five_minute_ago > self.image_code.expiration:
-            self.image_code and self.image_code.delete()
-            raise CustomValidationError('验证码过期')
-        else:
-            if self.image_code and (self.image_code.response == captcha or self.image_code.challenge == captcha):
-                self.image_code and self.image_code.delete()
-            else:
-                self.image_code and self.image_code.delete()
-                raise CustomValidationError("图片验证码错误")
+        if settings.CAPTCHA_STATE is True:
+          self.image_code = CaptchaStore.objects.filter(
+              id=self.initial_data['captchaKey']).first()
+          five_minute_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
+          if self.image_code and five_minute_ago > self.image_code.expiration:
+              self.image_code and self.image_code.delete()
+              raise CustomValidationError('验证码过期')
+          else:
+              if self.image_code and (self.image_code.response == captcha or self.image_code.challenge == captcha):
+                  self.image_code and self.image_code.delete()
+              else:
+                  self.image_code and self.image_code.delete()
+                  raise CustomValidationError("图片验证码错误")
 
     def validate(self, attrs):
         data = super().validate(attrs)
