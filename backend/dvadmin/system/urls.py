@@ -29,7 +29,7 @@ system_url.register(r'system_config', SystemConfigViewSet)
 
 urlpatterns = [
     path('role/roleId_get_menu/<int:pk>/', RoleViewSet.as_view({'get': 'roleId_get_menu'})),
-    path('menu/web_router/', MenuViewSet.as_view({'get': 'web_router'})),
+    #path('menu/web_router/', MenuViewSet.as_view({'get': 'web_router'})),
     path('user/user_info/', UserViewSet.as_view({'get': 'user_info', 'put': 'update_user_info'})),
     path('user/change_password/<int:pk>/', UserViewSet.as_view({'put': 'change_password'})),
     path('user/reset_to_default_password/<int:pk>/', UserViewSet.as_view({'put': 'reset_to_default_password'})),
