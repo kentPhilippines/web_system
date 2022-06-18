@@ -124,6 +124,7 @@ class ImportSerializerMixin:
             ele.attname
             for ele in queryset.model._meta.get_fields()
             if hasattr(ele, "many_to_many") and ele.many_to_many == True
+            if not hasattr(ele, "multiple")
         ]
         data = import_to_data(request.data.get("url"), self.import_field_dict, m2m_fields)
         unique_list = [
