@@ -1,7 +1,7 @@
 FROM registry.cn-zhangjiakou.aliyuncs.com/dvadmin-pro/node12-base-web:latest
 WORKDIR /web/
 COPY web/. .
-RUN npm install --registry=https://registry.npm.taobao.org
+RUN npm install --registry=https://registry.npmmirror.com
 RUN npm run build
 
 FROM nginx:alpine

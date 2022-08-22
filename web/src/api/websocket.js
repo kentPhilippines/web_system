@@ -3,7 +3,8 @@ import util from '@/libs/util'
 function initWebSocket (e) {
   const token = util.cookies.get('token')
   if (token) {
-    const wsUri = 'ws://127.0.0.1:8000/?auth=' + token
+    // 根据环境选择路径
+    const wsUri = process.env.NODE_ENV === 'development' ? `${process.env.VUE_APP_SOCKET_API}/?auth=` + token : `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${process.env.VUE_APP_SOCKET_API}/?auth=${token}`
     this.socket = new WebSocket(wsUri)// 这里面的this都指向vue
     this.socket.onerror = webSocketOnError
     this.socket.onmessage = webSocketOnMessage
