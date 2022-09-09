@@ -25,7 +25,7 @@ def get_request_user(request):
     if user and user.is_authenticated:
         return user
     try:
-        user, tokrn = JWTAuthentication().authenticate(request)
+        user, token = JWTAuthentication().authenticate(request)
     except Exception as e:
         pass
     return user or AnonymousUser()
