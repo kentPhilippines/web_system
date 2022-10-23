@@ -148,8 +148,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-# MEDIA_ROOT = "media"  # 项目下的目录
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = "media"  # 项目下的目录
 MEDIA_URL = "/media/"  # 跟STATIC_URL类似，指定用户可以通过这个url找到文件
 
 # 收集静态文件，必须将 MEDIA_ROOT,STATICFILES_DIRS先注释
