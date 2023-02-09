@@ -5,7 +5,7 @@ import multiprocessing
 # 并行工作进程数, int，cpu数量*2+1 推荐进程数
 workers = multiprocessing.cpu_count() * 2 + 1
 # 指定每个进程开启的线程数
-threads = 3
+threads = 4
 # 绑定的ip与端口
 bind = '0.0.0.0:8000'
 # 设置守护进程,将进程交给第三方管理
