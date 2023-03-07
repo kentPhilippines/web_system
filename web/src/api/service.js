@@ -21,15 +21,22 @@ export function getErrorMessage (msg) {
       util.cookies.remove('token')
       util.cookies.remove('uuid')
       router.push({ path: '/login' })
-      router.go(0)
+      // router.go(0)
       return '登录超时，请重新登录！'
     }
     if (msg.code === 'user_not_found') {
       util.cookies.remove('token')
       util.cookies.remove('uuid')
       router.push({ path: '/login' })
-      router.go(0)
+      // router.go(0)
       return '用户无效，请重新登录！'
+    }
+    if (msg.code === 'User logs in elsewhere') {
+      util.cookies.remove('token')
+      util.cookies.remove('uuid')
+      router.push({ path: '/login' })
+      // router.go(0)
+      return '用户已在其他地方登录，请确认账户安全！'
     }
     return Object.values(msg)
   }
@@ -82,7 +89,6 @@ function createService () {
             util.cookies.remove('token')
             util.cookies.remove('uuid')
             util.cookies.remove('refresh')
-            router.push({ path: '/login' })
             errorCreate(`${getErrorMessage(dataAxios.msg)}`)
             break
           case 404:
