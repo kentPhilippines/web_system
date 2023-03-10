@@ -100,7 +100,7 @@ def websocket_push(user_id, message):
     主动推送消息
     """
     username = "user_"+str(user_id)
-    print(103,message)
+    # print(103,message)
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
     username,
