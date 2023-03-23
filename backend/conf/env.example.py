@@ -47,3 +47,7 @@ ALLOWED_HOSTS = ["*"]
 
 # daphne启动命令
 #daphne application.asgi:application -b 0.0.0.0 -p 8000
+
+# 是否开启用户登录严格模式
+# 开启后，同一个用户同一时间只允许在一个浏览器内登录，并且注销时jwt Token 立即失效
+STRICT_LOGIN = True

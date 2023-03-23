@@ -213,7 +213,7 @@ export default {
     },
     // 拖拽事件
     onDrag (e, item) {
-      const { key, width, height } = item
+      const { key } = item
       const parentRect = this.$refs.widgets.getBoundingClientRect()
       let mouseInGrid = false
       if (((mouseXY.x > parentRect.left) && (mouseXY.x < parentRect.right)) && ((mouseXY.y > parentRect.top) && (mouseXY.y < parentRect.bottom))) {
@@ -238,15 +238,15 @@ export default {
         }
         const el = this.$refs.gridlayout.$children[index]
         el.dragging = { top: mouseXY.y - parentRect.top, left: mouseXY.x - parentRect.left }
-        const new_pos = el.calcXY(mouseXY.y - parentRect.top, mouseXY.x - parentRect.left)
+        const newPos = el.calcXY(mouseXY.y - parentRect.top, mouseXY.x - parentRect.left)
         if (mouseInGrid === true) {
-          this.$refs.gridlayout.dragEvent('dragstart', this.getLayoutElementNumber(key), new_pos.x, new_pos.y, 1, 1)
+          this.$refs.gridlayout.dragEvent('dragstart', this.getLayoutElementNumber(key), newPos.x, newPos.y, 1, 1)
           DragPos.i = String(index)
           DragPos.x = this.layout[index].x
           DragPos.y = this.layout[index].y
         }
         if (mouseInGrid === false) {
-          this.$refs.gridlayout.dragEvent('dragend', this.getLayoutElementNumber(key), new_pos.x, new_pos.y, 1, 1)
+          this.$refs.gridlayout.dragEvent('dragend', this.getLayoutElementNumber(key), newPos.x, newPos.y, 1, 1)
           this.layout = this.layout.filter(obj => obj.i !== this.getLayoutElementNumber(key))
         }
       }

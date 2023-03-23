@@ -13,12 +13,13 @@ STATUS_CHOICES = (
 )
 
 
-class Users(CoreModel,AbstractUser):
+class Users(CoreModel, AbstractUser):
     username = models.CharField(max_length=150, unique=True, db_index=True, verbose_name="用户账号", help_text="用户账号")
     email = models.EmailField(max_length=255, verbose_name="邮箱", null=True, blank=True, help_text="邮箱")
     mobile = models.CharField(max_length=255, verbose_name="电话", null=True, blank=True, help_text="电话")
     avatar = models.CharField(max_length=255, verbose_name="头像", null=True, blank=True, help_text="头像")
     name = models.CharField(max_length=40, verbose_name="姓名", help_text="姓名")
+    login_flag = models.CharField(max_length=36, verbose_name="凭证失效flag", null=True, blank=True, help_text="凭证及时失效标志")
     GENDER_CHOICES = (
         (0, "未知"),
         (1, "男"),

@@ -4,8 +4,9 @@ import store from '@/store'
 function initWebSocket (e) {
   const token = util.cookies.get('token')
   if (token) {
-    const wsUri = util.wsBaseURL() + 'ws/' + token + '/'
-    this.socket = new WebSocket(wsUri)// 这里面的this都指向vue
+    const wsUri = util.wsBaseURL() + 'ws/'
+    // const wsUri = util.wsBaseURL() + 'ws/' + token + '/'
+    this.socket = new WebSocket(wsUri, [token])// 这里面的this都指向vue
     this.socket.onerror = webSocketOnError
     this.socket.onmessage = webSocketOnMessage
     this.socket.onclose = closeWebsocket

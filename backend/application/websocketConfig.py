@@ -58,7 +58,7 @@ class DvadminWebSocket(AsyncJsonWebsocketConsumer):
     async def connect(self):
         try:
             import jwt
-            self.service_uid = self.scope["url_route"]["kwargs"]["service_uid"]
+            self.service_uid = self.scope["subprotocols"][0]
             decoded_result = jwt.decode(self.service_uid, settings.SECRET_KEY, algorithms=["HS256"])
             if decoded_result:
                 self.user_id = decoded_result.get('user_id')
@@ -68,7 +68,7 @@ class DvadminWebSocket(AsyncJsonWebsocketConsumer):
                     self.chat_group_name,
                     self.channel_name
                 )
-                await self.accept()
+                await self.accept(subprotocol=self.service_uid)
                 # 主动推送消息
                 unread_count = await _get_message_unread(self.user_id)
                 if unread_count == 0:
@@ -78,7 +78,8 @@ class DvadminWebSocket(AsyncJsonWebsocketConsumer):
                     await self.send_json(
                         set_message('system', 'SYSTEM', "请查看您的未读消息~",
                                     unread=unread_count))
-        except InvalidSignatureError:
+        except InvalidSignatureError as e:
+            print(e.__str__())
             await self.disconnect(None)
 
     async def disconnect(self, close_code):
@@ -121,6 +122,7 @@ class MessageCreateSerializer(CustomModelSerializer):
         model = MessageCenter
         fields = "__all__"
         read_only_fields = ["id"]
+        
 
 def websocket_push(user_id,message):
     username = "user_" + str(user_id)
@@ -132,6 +134,7 @@ def websocket_push(user_id,message):
             "json": message
         }
     )
+
 
 def create_message_push(title: str, content: str, target_type: int=0, target_user: list=[], target_dept=None, target_role=None,
              message: dict = {'contentType': 'INFO', 'content': '测试~'}, request= Request):

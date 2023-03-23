@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import uuid
 from datetime import datetime, timedelta
 
 from captcha.views import CaptchaStore, captcha_image
@@ -57,10 +58,12 @@ class LoginSerializer(TokenObtainPairSerializer):
     captcha = serializers.CharField(
         max_length=6, required=False, allow_null=True, allow_blank=True
     )
+
     class Meta:
         model = Users
         fields = "__all__"
         read_only_fields = ["id"]
+
 
 class LoginView(TokenObtainPairView):
     """
@@ -125,6 +128,14 @@ class LoginView(TokenObtainPairView):
         if role:
             result['role_info'] = role.values('id', 'name', 'key')
         refresh = LoginSerializer.get_token(user)
+        if settings.STRICT_LOGIN:
+            login_flag = uuid.uuid4().__str__()
+            refresh['login_flag'] = login_flag
+            user.login_flag = login_flag
+            try:
+                user.save()
+            except Exception as e:
+                return ErrorResponse("登录失败！系统发生致命错误！")
         result["refresh"] = str(refresh)
         result["access"] = str(refresh.access_token)
         # 记录登录日志
@@ -165,6 +176,13 @@ class LoginTokenView(TokenObtainPairView):
 
 class LogoutView(APIView):
     def post(self, request):
+        if settings.STRICT_LOGIN:
+            user = request.user
+            try:
+                user.login_flag = "logout"
+                user.save()
+            except Exception as e:
+                pass
         return DetailResponse(msg="注销成功")
 
 

@@ -9,8 +9,8 @@ export const crudOptions = (vm) => {
     },
     options: {
       height: '100%',
-     // tableType: 'vxe-table',
-      //rowKey: true,
+      // tableType: 'vxe-table',
+      // rowKey: true,
       rowId: 'id'
     },
     selectionRow: {
