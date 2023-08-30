@@ -169,6 +169,25 @@ class SystemConfigViewSet(CustomModelViewSet):
     # filter_fields = ['id','parent']
     filter_class = SystemConfigFilter
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.parent.form_item_type == 11:
+            parent = instance.parent
+            parent.value = list(filter(lambda x: x['key'] != instance.key, parent.value))
+            parent.save()
+        return super().destroy(request, *args, **kwargs)
+
+    def multiple_delete(self, request, *args, **kwargs):
+        request_data = request.data
+        keys = request_data.get('keys', None)
+        queryset = self.get_queryset().filter(id__in=keys)
+        for instance in queryset:
+            if instance.parent.form_item_type == 11:
+                parent = instance.parent
+                parent.value = list(filter(lambda x: x['key'] != instance.key, parent.value))
+                parent.save()
+        return super().multiple_delete(request, *args, **kwargs)
+
     def save_content(self, request):
         body = request.data
         data_mapping = {item['id']: item for item in body}
