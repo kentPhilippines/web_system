@@ -76,6 +76,7 @@ class ApiLoggingMiddleware(MiddlewareMixin):
         return
 
     def process_request(self, request):
+        self.operation_log_id = None
         self.__handle_request(request)
 
     def process_response(self, request, response):
