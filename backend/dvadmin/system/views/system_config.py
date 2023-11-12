@@ -171,14 +171,19 @@ class SystemConfigViewSet(CustomModelViewSet):
 
     def save_content(self, request):
         body = request.data
-        data_mapping = {item['id']: item for item in body}
+        data_mapping = {item['id']: item for item in body if item['id'] is not None}
+        create_data_list = list()
         for obj_id, data in data_mapping.items():
             instance_obj = SystemConfig.objects.filter(id=obj_id).first()
             if instance_obj is None:
-                # return SystemConfig.objects.create(**data)
-                serializer = SystemConfigCreateSerializer(data=data)
+                create_data_list.append(data)
             else:
                 serializer = SystemConfigCreateSerializer(instance_obj, data=data)
+                if serializer.is_valid(raise_exception=True):
+                    serializer.save()
+        create_data_list += [item for item in body if item['id'] is None]
+        for data in create_data_list:
+            serializer = SystemConfigCreateSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
         websocket_push("dvadmin", message={"sender": 'system', "contentType": 'SYSTEM',
